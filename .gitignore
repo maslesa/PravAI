@@ -17,6 +17,7 @@ env/
 
 data/processed/
 data/raw/
+data/chroma/
 
 *.log
 

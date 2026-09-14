@@ -39,10 +39,36 @@ ARTICLE_PATTERN = re.compile(r"(?mi)^\s*Члан\s+([0-9]+[а-яА-Я]?)\.?\s*$"
 PARAGRAPH_PATTERN = re.compile(r"(?m)^\s*\((\d+)\)\s*(.*?)(?=\n\s*\(\d+\)|\Z)", re.DOTALL)
 ITEM_PATTERN = re.compile(r"(?m)^\s*(\d+)\)\s*(.*?)(?=\n\s*\d+\)|\Z)", re.DOTALL)
 CHAPTER_PATTERN = re.compile(r"(?mi)^\s*ГЛАВА\s+(.+?)\.?\s*$")
+AMENDMENT_SECTION_MARKERS = [
+    'НАПОМЕНА ИЗДАВАЧА:',
+    'ОДРЕДБЕ КОЈЕ НИСУ УНЕТЕ У "ПРЕЧИШЋЕН ТЕКСТ" ЗАКОНА',
+    'ОДРЕДБЕ КОЈЕ НИСУ УШЛЕ У "ПРЕЧИШЋЕН ТЕКСТ" ЗАКОНА',
+    'ОДРЕДБЕ КОЈЕ НИСУ ОБУХВАЋЕНЕ "ПРЕЧИШЋЕНИМ ТЕКСТОМ" ЗАКОНА',
+    'ОДРЕДБЕ КОЈЕ НИСУ УНЕТЕ У ПРЕЧИШЋЕН ТЕКСТ ЗАКОНА',
+    'У РЕДАКЦИЈСКОМ ПРЕЧИШЋЕНОМ ТЕКСТУ НЕ НАЛАЗЕ СЕ:',
+    "Закон о изменама и допунама",
+]
 
 
 def combine_pages(pages: list[ExtractedPage]) -> str:
     return '\n\n'.join(page.text for page in pages if page.text.strip())
+
+
+def isolate_canonical_text(text: str) -> str:
+    positions = []
+
+    for marker in AMENDMENT_SECTION_MARKERS:
+        position = text.find(marker)
+
+        if position != -1:
+            positions.append(position)
+
+    if not positions:
+        return text
+
+    first_marker_position = min(positions)
+
+    return text[:first_marker_position].strip()
 
 
 def parse_paragraphs(text: str) -> list[Paragraph]:
@@ -140,6 +166,7 @@ def parse_chapters(text: str) -> list[Chapter]:
 
 def parse_document(pages: list[ExtractedPage], metadata: dict) -> LegalDocument:
     text = combine_pages(pages)
+    text = isolate_canonical_text(text)
     chapters = parse_chapters(text)
 
     return LegalDocument(
