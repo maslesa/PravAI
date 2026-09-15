@@ -1,6 +1,7 @@
 from src.ingestion.pipeline import process_directory
 from src.chunking.pipeline import process_all_documents
 from src.embeddings.pipeline import run_embedding_pipeline
+from src.retrieval.pipeline import run_retrieval
 
 process_directory(
     input_dir='data/raw/laws',
@@ -21,4 +22,10 @@ process_all_documents(
 run_embedding_pipeline(
     chunks_dir='data/processed/chunks',
     chroma_path='data/chroma'
+)
+
+run_retrieval(
+    query='Da li poslodavac može da otkaže ugovor o radu zaposlenom?',
+    strategy='legal',
+    top_k=5,
 )
