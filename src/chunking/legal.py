@@ -24,6 +24,7 @@ def _chunk_article(document: LegalDocument, chapter_number: str, article: Articl
         'language': document.metadata['language'],
         'chapter': chapter_number,
         'article': article.number,
+        'articles': [article.number],
         'chunking_strategy': 'legal'
     }
 

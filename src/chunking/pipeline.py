@@ -1,4 +1,5 @@
 import json
+import re
 from dataclasses import asdict
 from pathlib import Path
 from src.ingestion.parser import LegalDocument, Chapter, Article, Paragraph, Item
@@ -6,6 +7,10 @@ from .fixed import fixed_size_chunks
 from .models import Chunk
 from .recursive import recursive_chunks
 from .legal import legal_chunks
+
+def extract_article_numbers(text: str) -> list[str]:
+    pattern = re.compile(r"(?mi)^\s*(?:Члан|Član)\s+([0-9]+[а-яА-Яa-zA-Z]?)\.?\s*$")
+    return list(dict.fromkeys(match.group(1) for match in pattern.finditer(text)))
 
 
 def load_document(path: str | Path) -> LegalDocument:
@@ -73,17 +78,25 @@ def create_text_chunks(document: LegalDocument, strategy: str, chunk_size: int, 
     chunks = []
 
     for index, chunk_text in enumerate(texts):
+        articles = extract_article_numbers(chunk_text)
+
+        if index < 5:
+            print(f"Chunk {index}: articles={articles}")
+
+        metadata = {
+            "document_id": document.metadata["document_id"],
+            "document_title": document.metadata["title"],
+            "document_type": document.metadata["document_type"],
+            "language": document.metadata["language"],
+            "chunking_strategy": strategy,
+            "chunk_index": index,
+            "articles": articles if articles else ['unknown'],
+        }
+
         chunks.append(Chunk(
             chunk_id=f'{document.metadata['document_id']}_{strategy}_{index}',
             text=chunk_text,
-            metadata={
-                "document_id": document.metadata["document_id"],
-                "document_title": document.metadata["title"],
-                "document_type": document.metadata["document_type"],
-                "language": document.metadata["language"],
-                "chunking_strategy": strategy,
-                "chunk_index": index,
-            }
+            metadata=metadata,
         ))
 
     return chunks
