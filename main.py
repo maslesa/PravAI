@@ -1,7 +1,6 @@
 from src.ingestion.pipeline import process_directory
 from src.chunking.pipeline import process_all_documents
 from src.embeddings.pipeline import run_embedding_pipeline
-from src.retrieval.pipeline import run_retrieval
 from src.evaluation.pipeline import run_evaluation
 
 process_directory(
@@ -24,13 +23,6 @@ run_embedding_pipeline(
     chunks_dir='data/processed/chunks',
     chroma_path='data/chroma'
 )
-
-
-# run_retrieval(
-#     query='Koliki je otkazni rok kada zaposleni sam otkazuje ugovor o radu?',
-#     strategy='legal',
-#     top_k=5,
-# )
 
 
 run_evaluation(
