@@ -7,6 +7,7 @@ class SearchResult:
     text: str
     metadata: dict
     distance: float
+    reranker_score: float | None = None
 
     @property
     def similarity(self) -> float:

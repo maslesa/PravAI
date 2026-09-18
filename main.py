@@ -2,6 +2,8 @@ from src.ingestion.pipeline import process_directory
 from src.chunking.pipeline import process_all_documents
 from src.embeddings.pipeline import run_embedding_pipeline
 from src.evaluation.pipeline import run_evaluation
+# from src.evaluation.reranker_runner import run_evaluation
+
 
 process_directory(
     input_dir='data/raw/laws',
@@ -29,3 +31,10 @@ run_evaluation(
     dataset_path='data/evaluation/retrieval_questions.json',
     chroma_path='data/chroma'
 )
+
+
+# function for rerank pipeline call
+# run_evaluation(
+#     initial_top_k=20,
+#     final_top_k=5
+# )
