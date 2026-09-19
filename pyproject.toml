@@ -8,5 +8,6 @@ dependencies = [
     "matplotlib>=3.11.2",
     "pandas>=3.0.5",
     "pymupdf>=1.28.2",
+    "rank-bm25>=0.2.2",
     "sentence-transformers>=6.0.1",
 ]

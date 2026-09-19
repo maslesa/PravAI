@@ -1,7 +1,19 @@
 from src.embeddings.chroma import ChromaStore
 from src.embeddings.model import EmbeddingModel
+from .bm25 import BM25Retriever
+from .hybrid import HybridRetriever
 from .reranker import CrossEncoderReranker
 from .search import SemanticRetriever
+
+
+def create_hybrid_retriever():
+    embedding_model = EmbeddingModel()
+    chroma_store = ChromaStore()
+
+    semantic_retriever = SemanticRetriever(embedding_model, chroma_store)
+    bm25_retriever = BM25Retriever()
+
+    return HybridRetriever(semantic_retriever, bm25_retriever)
 
 
 def run_retrieval(query: str, strategy: str = 'legal', top_k: int = 5, chroma_path: str = 'data/chroma'):
@@ -50,5 +62,38 @@ def run_reranked_retrieval(
     initial_results = retriever.search(query=query, strategy=strategy, top_k=initial_top_k)
 
     reranked_results = reranker.rerank(query=query, results=initial_results, top_k=final_top_k)
+
+    return reranked_results
+
+
+def run_hybrid_retrieval(query: str, initial_top_k: int = 20, final_top_k: int = 5):
+    hybrid_retriever = create_hybrid_retriever()
+
+    results = hybrid_retriever.search(
+        query=query,
+        semantic_top_k=initial_top_k,
+        bm25_top_k=initial_top_k,
+        final_top_k=final_top_k,
+    )
+
+    return results
+
+
+def run_hybrid_reranked_retrieval(query: str, initial_top_k: int = 20, final_top_k: int = 5):
+    hybrid_retriever = create_hybrid_retriever()
+    reranker = CrossEncoderReranker()
+
+    hybrid_results = hybrid_retriever.search(
+        query=query,
+        semantic_top_k=initial_top_k,
+        bm25_top_k=initial_top_k,
+        final_top_k=initial_top_k,
+    )
+
+    reranked_results = reranker.rerank(
+        query=query,
+        results=hybrid_results,
+        top_k=final_top_k,
+    )
 
     return reranked_results

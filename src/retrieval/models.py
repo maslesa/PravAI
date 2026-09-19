@@ -8,6 +8,8 @@ class SearchResult:
     metadata: dict
     distance: float
     reranker_score: float | None = None
+    bm25_score: float | None = None
+    hybrid_score: float | None = None
 
     @property
     def similarity(self) -> float:
