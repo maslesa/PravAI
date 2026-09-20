@@ -16,7 +16,7 @@ def query(request: QueryRequest, service: QueryService = Depends(get_query_servi
     except RuntimeError as error:
         raise HTTPException(status_code=503, detail=str(error)) from error
 
-    citations = [CitationResponse(law=citation.law, article=citation.article) for citation in result.citations]
+    citations = [CitationResponse(law=citation.law, article=citation.article) for citation in result.citations] if result.citations else []
 
     return QueryResponse(
         answer=result.answer,
