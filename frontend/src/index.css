@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+  --color-mybg: #e1dcc9;
+  --color-mytxt: #1f150c;
+  --color-mytxt-light: #412c15;
+  --font-roboto: "Roboto", sans-serif;
+}
+
 :root {
   font-family:
     Inter,
@@ -11,7 +18,7 @@
     sans-serif;
 
   color: #18181b;
-  background: #f4f4f5;
+  background: var(--color-mybg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -24,4 +31,6 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--color-mybg);
 }
+

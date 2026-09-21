@@ -28,7 +28,7 @@ export function QueryInput({
       onSubmit={handleSubmit}
       className="w-full"
     >
-      <div className="rounded-2xl border border-zinc-200 bg-white p-2 shadow-sm">
+      <div className="rounded-2xl border-2 border-mytxt bg-mybg p-2 shadow-sm">
         <textarea
           value={question}
           onChange={(event) =>
@@ -38,18 +38,18 @@ export function QueryInput({
           rows={4}
           maxLength={2000}
           disabled={loading}
-          className="w-full resize-none rounded-xl border-0 bg-transparent px-4 py-3 text-base text-zinc-900 outline-none placeholder:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full resize-none rounded-xl border-0 bg-transparent px-4 py-3 text-base text-mytxt outline-none placeholder:text-mytxt/50 disabled:cursor-not-allowed disabled:opacity-60"
         />
 
         <div className="flex items-center justify-between px-3 pb-2">
-          <span className="text-xs text-zinc-400">
+          <span className="text-xs text-mytxt/50">
             {question.length}/2000
           </span>
 
           <button
             type="submit"
             disabled={!question.trim() || loading}
-            className="rounded-xl bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
+            className="rounded-xl bg-mytxt px-5 py-2.5 text-sm font-medium cursor-pointer text-mybg transition hover:opacity-80 duration-150 disabled:cursor-not-allowed disabled:bg-mytxt/50 disabled:text-mybg"
           >
             {loading ? "Istraživanje..." : "Postavi pitanje"}
           </button>

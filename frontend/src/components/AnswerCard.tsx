@@ -14,17 +14,17 @@ export function AnswerCard({
 }: AnswerCardProps) {
   return (
     <section className="mt-8">
-      <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm">
-        <div className="border-b border-zinc-100 px-6 py-5">
+      <div className="rounded-2xl border-2 border-mytxt bg-bg shadow-sm">
+        <div className="border-b-2 border-m px-6 py-5">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="text-lg font-semibold text-zinc-900">
+            <h2 className="text-lg font-semibold text-mytxt">
               Odgovor
             </h2>
 
             <span
               className={`rounded-full px-3 py-1 text-xs font-medium ${
                 grounded
-                  ? "bg-emerald-50 text-emerald-700"
+                  ? "bg-emerald-50 text-emerald-600"
                   : "bg-amber-50 text-amber-700"
               }`}
             >
@@ -36,7 +36,7 @@ export function AnswerCard({
         </div>
 
         <div className="px-6 py-6">
-          <p className="whitespace-pre-line text-base leading-7 text-zinc-700">
+          <p className="whitespace-pre-line text-base leading-7 text-mytxt">
             {answer}
           </p>
         </div>
@@ -44,7 +44,7 @@ export function AnswerCard({
 
       {citations.length > 0 && (
         <div className="mt-6">
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-mytxt">
             Izvori
           </h3>
 
