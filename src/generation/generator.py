@@ -2,7 +2,8 @@ import json
 from src.retrieval.models import SearchResult
 from .llm import OllamaLLM
 from .models import Citation, GeneratedAnswer
-from .prompt import SYSTEM_PROMPT, build_prompt
+from .prompt import SYSTEM_PROMPT, build_prompt, STREAMING_SYSTEM_PROMPT, build_streaming_prompt
+from collections.abc import Iterator
 
 
 class AnswerGenerator:
@@ -97,7 +98,7 @@ class AnswerGenerator:
                 )
             )
 
-            return self._remove_duplicate_citations(citations)
+        return self._remove_duplicate_citations(citations)
 
 
     @staticmethod
@@ -115,3 +116,20 @@ class AnswerGenerator:
             unique.append(citation)
 
         return unique
+
+
+    def stream(self, question: str, results: list[SearchResult]) -> Iterator[str]:
+        if not question.strip():
+            raise ValueError('Question must not be empty.')
+
+        if not results:
+            yield 'Na osnovu dostupnih izvora nije moguće dati pouzdan odgovor na ovo pitanje.'
+            return
+
+        prompt = build_streaming_prompt(question, results)
+
+        yield from self.llm.stream(
+            system_prompt=STREAMING_SYSTEM_PROMPT,
+            user_prompt=prompt,
+            temperature=0.0
+        )

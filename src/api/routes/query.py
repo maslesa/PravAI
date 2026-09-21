@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..dependecies import get_query_service
 from ..schemas.query import CitationResponse, QueryRequest, QueryResponse
 from ..services.query_service import QueryService
+from fastapi.responses import StreamingResponse
 
 
 router = APIRouter(
@@ -22,4 +23,16 @@ def query(request: QueryRequest, service: QueryService = Depends(get_query_servi
         answer=result.answer,
         citations=citations,
         grounded=result.grounded,
+    )
+
+
+@router.post('/stream', response_class=StreamingResponse)
+def stream_query(request: QueryRequest, service: QueryService = Depends(get_query_service)):
+    return StreamingResponse(
+        service.stream_answer(question=request.question),
+        media_type='application/x-ndjson',
+        headers={
+            'Cache-Control': 'no-cache',
+            'X_Accel-Buffering': 'no',
+        }
     )

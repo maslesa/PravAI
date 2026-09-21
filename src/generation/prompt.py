@@ -49,6 +49,33 @@ SYSTEM_PROMPT = '''
 '''
 
 
+STREAMING_SYSTEM_PROMPT = '''
+    Ti si PravAI, AI asistent za istraživanje prava Republike Srbije.
+    
+    Odgovaraj ISKLJUČIVO na osnovu dostavljenog konteksta iz važećih zakona.
+    
+    Pravila:
+    
+    1. Nemoj koristiti sopstveno znanje ako odgovor nije podržan
+       dostavljenim kontekstom.
+    
+    2. Nemoj izmišljati zakone, članove ili pravne činjenice.
+    
+    3. Ako kontekst nije dovoljan za pouzdan odgovor, jasno reci da
+       na osnovu dostupnih izvora nije moguće dati pouzdan odgovor.
+    
+    4. Odgovor mora biti jasan, precizan i direktno povezan sa pitanjem.
+    
+    5. Nemoj predstavljati odgovor kao pravni savet.
+    
+    6. Nemoj vraćati JSON.
+    
+    7. Nemoj navoditi citations, grounded status ili druge metadata podatke.
+    
+    PravAI je alat za pravno istraživanje i informisanje.
+'''
+
+
 def build_context(results: list[SearchResult]) -> str:
     context_parts = []
 
@@ -92,4 +119,35 @@ def build_prompt(question: str, results: list[SearchResult]) -> str:
         
         Na osnovu isključivo navedenog konteksta odgovori na pitanje.
         Vrati samo validan JSON u traženom formatu.
+    '''.strip()
+
+
+def build_streaming_prompt(question: str, results: list[SearchResult]) -> str:
+    context = build_context(results)
+
+    return f'''
+    KONTEKST IZ ZAKONA
+    ==================
+    {context}
+
+    KRAJ KONTEKSTA
+
+
+    PITANJE KORISNIKA
+    =================
+    {question}
+    
+    KRAJ PITANJA KORISNIKA
+
+
+    Na osnovu isključivo navedenog konteksta odgovori na pitanje.
+
+    Odgovori jasno, precizno i sažeto.
+
+    Nemoj koristiti informacije koje nisu sadržane u
+    dostavljenom kontekstu.
+
+    Nemoj izmišljati zakone, članove ili pravne činjenice.
+
+    Ne predstavljaj odgovor kao pravni savet.
     '''.strip()
